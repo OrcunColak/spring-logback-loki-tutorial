@@ -7,8 +7,11 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki/config:/etc/loki
     networks:
       - loki
+  
   grafana:
     environment:
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
