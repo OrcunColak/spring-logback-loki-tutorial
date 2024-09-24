@@ -2,24 +2,33 @@
 <configuration debug="false">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+    <property name="APP_NAME" value="demo_logs" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg traceId=%X{traceId} spanId=%X{spanId}%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
         <http>
             <url>http://localhost:3100/loki/api/v1/push</url>
         </http>
         <format>
             <label>
-                <pattern>app=${name},host=${HOSTNAME},level=%level</pattern>
+                <pattern>app=${APP_NAME},host=${HOSTNAME},level=%level</pattern>
                 <readMarkers>true</readMarkers>
             </label>
             <message>
                 <pattern>
-                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %magenta(%-5level) %green([%-50.50class]) >>> %blue(%msg) %n
+                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg traceId=%X{traceId} spanId=%X{spanId}%n
                 </pattern>
             </message>
         </format>
     </appender>
 
     <root level="INFO">
+        <appender-ref ref="STDOUT" />
         <appender-ref ref="LOKI"/>
     </root>
 </configuration>
